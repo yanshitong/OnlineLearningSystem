@@ -1,0 +1,38 @@
+server:
+ port: 9524
+spring:
+ datasource:
+  username: root
+  password: 123
+  url: jdbc:mysql://localhost:3306/ovls?useUnicode=true&characterEncoding=utf8
+  driverClassName: com.mysql.jdbc.Driver
+ application:
+  name: ovls-zuul
+eureka:
+ client:
+  serviceUrl:
+   defaultZone: http://127.0.0.1:7777/eureka
+ instance:
+  perferIpAddress: true
+  instanceId: ${spring.cloud.client.ip-address}:${server.port}
+zuul:
+ routes:
+  user:
+   path: /OVLS-COURSE/**
+   service-id: OVLS-COURSE
+ host:
+   connect-timeout-millis: 6000
+   socket-timeout-millis: 6000
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+
+hystrix:
+  command:
+    default:
+      execution:
+         isolation:
+           thread:
+             timeoutInMilliseconds: 250000
+
+

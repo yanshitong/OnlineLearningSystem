@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>用户管理</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="layer/layer.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $(".click").click(function(){
+  $(".tip").fadeIn(200);
+  });
+  
+  $(".tiptop a").click(function(){
+  $(".tip").fadeOut(200);
+});
+
+  $(".sure").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+  $(".cancel").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+});
+</script>
+<script type="text/javascript">
+    //用户信息
+    $(function () {
+        $.ajax({
+            url: "http://127.0.0.1:9524/ovls-user/user/getAllUserInfo",
+            type: "get",
+            dataType: "json",
+            success: function (result) {
+                $("#blue").html(result.length);
+                //result表示服务器返回的json结果
+                for(var i=0; i <result.length;i++){
+                    var id =result[i].id;
+                    var name =result[i].name;
+                    var nickName =result[i].nickName ;
+                    var position=result[i].position;
+                    var sex =result[i].sex ;
+                    var location =result[i].location ;
+                    var signature  =result[i].signature;
+                    var image =result[i].image;
+                    var regtime =result[i].regtime;
+                    var curTime = new Date(regtime).Format("yyyy-MM-dd hh:mm:ss");
+                    var str ='';
+                    str+=' <tr>';
+                    str+='<td >'+id+'</td>';
+                    str+='<td>'+name+'</td>';
+                    str+='<td>'+ nickName +'</td>';
+                    str+='<td>'+ position +'</td>';
+                    str+='<td>'+ sex +'</td>';
+                    str+='<td>'+ location +'</td>';
+                    str+='<td>'+ signature +'</td>';
+                    str+='<td>'+ image +'</td>';
+                    str+='<td>'+ curTime +'</td>';
+                    str+='<td onclick="deleteTr(this,'+id+')"> <a href="#" class="tablelink"> 删除</a></td>';
+                    str+='</tr> ';
+                    $("#userlist").append(str);
+                }
+            }
+        });
+
+    });
+ function deleteTr(obj,id){
+        //询问框
+        layer.confirm('确定删除此用户？', {
+            btn: ['确定','取消'] //按钮
+        }, function(index){
+            $.ajax({
+                url: "http://127.0.0.1:9524/ovls-user/delete/user?id="+id,
+                type:"DELETE",
+                dataType: "json",
+                success: function (result) {
+                    if(result=0){
+                        layer.msg('删除失败，请稍后重试。');
+                    }else{
+                        layer.close(index);
+                        $(obj).parent().remove();
+                    }
+                }
+            });
+
+        });
+    }
+
+
+
+    // 对Date的扩展，将 Date 转化为指定格式的String
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+    // 例子：
+    // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+    // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
+</head>
+
+
+<body>
+
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="#">首页</a></li>
+    <li><a href="#">数据表</a></li>
+    <li><a href="#">用户管理</a></li>
+    </ul>
+    </div>
+    
+    <div class="rightinfo">
+    
+
+    
+    <table class="tablelist">
+    	<thead id="userlist">
+    	<tr>
+        <th style="width: 60px;">编号</th>
+        <th style="width: 90px;">账号</th>
+        <th style="width: 90px;">昵称</th>
+        <th style="width: 120px;">职位</th>
+        <th style="width: 60px;">性别</th>
+        <th style="width: 120px;">所在地</th>
+        <th style="width: 120px;">个性签名</th>
+        <th style="width: 200px;">头像路径</th>
+        <th style="width: 120px;">注册时间</th>
+        <th style="width: 60px;">操作</th>
+        </tr>
+        </thead>
+        <tbody >
+
+        </tbody>
+    </table>
+
+    <div class="pagin">
+    	<div class="message">共<i class="blue" id="blue">1256</i>条记录<!--，当前显示第&nbsp;<i class="blue">2&nbsp;</i>页-->
+        </div>
+        <!--<ul class="paginList">
+        <li class="paginItem"><a href="javascript:;"><span class="pagepre"></span></a></li>
+        <li class="paginItem"><a href="javascript:;">1</a></li>
+        <li class="paginItem current"><a href="javascript:;">2</a></li>
+        <li class="paginItem"><a href="javascript:;">3</a></li>
+        <li class="paginItem"><a href="javascript:;">4</a></li>
+        <li class="paginItem"><a href="javascript:;">5</a></li>
+        <li class="paginItem more"><a href="javascript:;">...</a></li>
+        <li class="paginItem"><a href="javascript:;">10</a></li>
+        <li class="paginItem"><a href="javascript:;"><span class="pagenxt"></span></a></li>
+        </ul>-->
+    </div>
+    
+    
+
+    
+    
+    
+    
+    </div>
+    
+    <script type="text/javascript">
+	$('.tablelist tbody tr:odd').addClass('odd');
+	</script>
+</body>
+</html>

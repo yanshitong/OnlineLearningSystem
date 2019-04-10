@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+	<!-- 指定mysql驱动包 -->
+  <classPathEntry location="C:\Users\Administrator\.m2\repository\mysql\mysql-connector-java\5.1.47\mysql-connector-java-5.1.47.jar" />
+
+	
+	<!-- 指定mysql连接参数 -->
+  <context id="MySQLTables" targetRuntime="MyBatis3">
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+        connectionURL="jdbc:mysql://localhost:3306/ovls"
+        userId="root"
+        password="123">
+    </jdbcConnection>
+
+    <javaTypeResolver >
+      <property name="forceBigDecimals" value="false" />
+    </javaTypeResolver>
+
+	<!-- 指定生成实体类配置 -->
+    <javaModelGenerator targetPackage="com.yst.ovls.entity" targetProject="./src/main/java">
+      <property name="enableSubPackages" value="true" />
+      <property name="trimStrings" value="true" />
+    </javaModelGenerator>
+
+	<!-- 指定生成XML SQL定义文件配置 -->
+    <sqlMapGenerator targetPackage="sql"  targetProject="./src/main/resources">
+      <property name="enableSubPackages" value="true" />
+    </sqlMapGenerator>
+
+	<!-- 指定生成Mapper接口配置,type=XMLMAPPER指的是生成XML SQL文件，type=ANNOTATEDMAPPER指的是生成注解SQL,sqlMapGenerator会失效 -->
+    <javaClientGenerator type="ANNOTATEDMAPPER" targetPackage="com.yst.ovls.dao"  targetProject="./src/main/java">
+      <property name="enableSubPackages" value="true" />
+    </javaClientGenerator>
+
+	<!-- 指定根据哪些表生成上面MyBatis文件 -->
+    <table tableName="%" 
+    	enableCountByExample="false" enableDeleteByExample="false"
+    	enableSelectByExample="false" enableUpdateByExample="false">
+    </table>
+
+  </context>
+</generatorConfiguration>

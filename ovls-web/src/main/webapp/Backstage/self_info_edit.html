@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>课程管理</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="layer/layer.js"></script>
+
+<style type="text/css">
+
+/*确定按钮*/
+#g_submit{
+	background-color: #0088cc;
+color: #ffffff;
+font-size: 16px;
+padding: 5px;
+}
+#g_cancel{
+	font-size: 16px;
+    padding: 5px;
+    background-color: #fff;
+    color: #83878c;
+
+}
+
+#add td {
+    line-height: 35px;
+    text-indent: 30px;
+    border-bottom: none;
+    width:100px;
+}
+
+</style>
+</head>
+<body>
+
+	<div class="main">
+			<form action="" method="post">
+                <div >
+                    <table id="add">
+                        <thead>
+                        <tr >
+
+                            <h2  style="color:black ; font-size:25px ;padding-left: 170px;">课程添加界面</h2>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td >
+                                课程名称：
+                            </td>
+                            <td >
+                                <input id ="name" style="border:0.5px solid #b2e2fa;width:150px;height:25px" type="text" onclick="JavaScript:this.value=''"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                课程简介：
+                            </td>
+                            <td >
+                                <textarea id="intro" rows="3" style="border:0.5px solid #b2e2fa;width:150px;height:80px" cols="20" onclick="JavaScript:this.value=''"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                难&nbsp;&nbsp;&nbsp;&nbsp;度：
+                            </td>
+                            <td >
+                                <input id ="difficulty" style="border:0.5px solid #b2e2fa;width:150px;height:25px" type="text" value="请填写初级、中级或高级" onclick="JavaScript:this.value=''"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                课程评分：
+                            </td>
+                            <td >
+                                <input id="score" style="border:0.5px solid #b2e2fa;width:150px;height:25px" type="text" value="请填写0-10" onclick="JavaScript:this.value=''"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                图&nbsp;&nbsp;&nbsp;&nbsp;片：
+                            </td>
+                            <td>
+                                <input type="file" name="security_pic" id="file" class="uploadInput"
+                                       accept="image/jpg,image/jpeg,image/png,image/bmp"
+                                       multiple/>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                课程价格：
+                            </td>
+                            <td >
+                                <input id="price" style="border:0.5px solid #b2e2fa;width:150px;height:25px" type="text" onclick="JavaScript:this.value=''"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                学&nbsp;&nbsp;&nbsp;&nbsp;科：
+                            </td>
+                            <td>
+                                <select id="subject" name="subject">
+                                    <option>-- 请选择 --</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                课程时长：
+                            </td>
+                            <td>
+                                <input id="learnTime" style="border:0.5px solid #b2e2fa;width:150px;height:25px" type="text" value="请填小时" onclick="JavaScript:this.value=''"/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div>
+					<input type="button" value="确 定" onclick="onSubmit()" id="g_submit"/>&nbsp; 
+					<input type="button" value="取 消" onclick="fresh()" id="g_cancel"/>
+				</div>
+			</form>
+	</div>
+</body>
+<!-- <script type="text/javascript" src="js/jquery.min.js"></script> -->
+<script type="text/javascript">
+    //获取学科中下拉框选项
+$(function () {
+    $.ajax({
+        type: "get",
+        url: "http://127.0.0.1:9524/ovls-direction/getSubject",
+        dataType: "json",
+        success: function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $("#subject").append("<option id="+ data[i].id + ">" + data[i].name + "</option>");
+            }
+        }
+    });
+});
+</script>
+<script type="text/javascript">
+    //获取头像 并转换为 base64格式
+    function $_(id) {
+        return document.getElementById(id);
+    }
+    function gen_base64() {
+        var file = $_('file').files[0];
+        if (!/image\/\w+/.test(file.type)) {
+            alert("请确保文件为图像类型");
+            $_('upload_file').disabled = false;
+            return false;
+        }
+        var r = new FileReader();  //本地预览
+        r.onload = function () {
+           var image = r.result;
+            localStorage.imageCourse=image;
+        };
+        r.readAsDataURL(file);    //Base64
+    }
+
+    //往后台提交数据
+    function onSubmit(){
+        gen_base64(); //获取图片
+        var imageCourse =localStorage.imageCourse;
+        var subjectId = $("#subject").find("option:checked").attr("id");
+        var image = $("#image").val();         //获取到input的value，里面是文件的路径
+        var name = $("#name").val();
+        var intro = $("#intro").val();
+        var difficulty = $("#difficulty").val();
+        var score = $("#score").val();
+        var price = $("#price").val();
+        var learnTime = $("#learnTime").val();
+
+        $(function () {
+            $.ajax({
+                type: "post",
+                url: "http://127.0.0.1:9524/ovls-course/add/course",
+                dataType: "json",
+                data:{
+                    name:name,
+                    intro:intro,
+                    difficulty:difficulty,
+                    subjectId:subjectId,
+                    image:imageCourse,
+                    score:score,
+                    price:price,
+                    learnTime:learnTime
+                },
+                async: false,
+                success: function (result) {
+                    if(result == 1){
+                        alert('添加成功！');
+                        window.parent.location.reload();//刷新父窗口
+                    }else{
+                        layer.msg('添加失败！添加失败！');
+                    }
+                },
+                error:function () {
+                    layer.msg('添加失败！');
+                }
+
+            });
+        });
+    }
+
+</script>
+
+<script type="text/javascript">
+
+
+
+</script>
+
+<script type="text/javascript">
+	 //取消时调用
+	function fresh(){
+		window.parent.location.reload();//刷新父窗口
+	}	
+</script>
+</html>

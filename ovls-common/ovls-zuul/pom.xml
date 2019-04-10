@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.yst</groupId>
+    <artifactId>ovls-common</artifactId>
+    <version>0.0.1</version>
+  </parent>
+  <artifactId>ovls-zuul</artifactId>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.springframework.cloud</groupId>
+  		<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+  	</dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.thetransactioncompany/cors-filter -->
+      <dependency>
+          <groupId>com.thetransactioncompany</groupId>
+          <artifactId>cors-filter</artifactId>
+          <version>2.5</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.thetransactioncompany/java-property-utils -->
+      <dependency>
+          <groupId>com.thetransactioncompany</groupId>
+          <artifactId>java-property-utils</artifactId>
+          <version>1.9.1</version>
+      </dependency>
+
+  </dependencies>
+</project>

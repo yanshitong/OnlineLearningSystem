@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>方向管理</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="layer/layer.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $(".click").click(function(){
+  $(".tip").fadeIn(200);
+  });
+  
+  $(".tiptop a").click(function(){
+  $(".tip").fadeOut(200);
+});
+
+  $(".sure").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+  $(".cancel").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+});
+</script>
+<script type="text/javascript">
+    //用户信息
+    $(function () {
+        $.ajax({
+            url: "http://127.0.0.1:9524/ovls-direction/getDirection",
+            type: "get",
+            dataType: "json",
+            success: function (result) {
+                $("#blue").html(result.length);
+                //result表示服务器返回的json结果
+                for(var i=0; i <result.length;i++){
+                    var id =result[i].id;
+                    var name =result[i].name;
+                    var OrderId =result[i].OrderId==null?'暂无':result[i].OrderId;
+                    var str ='';
+                    str+=' <tr>';
+                    str+='<td >'+id+'</td>';
+                    str+='<td>'+name+'</td>';
+                    str+='<td>'+ OrderId +'</td>';
+                    str+='<td onclick="deleteTr(this,'+id+')"> <a href="#" class="tablelink"> 删除</a></td>';
+                    str+='</tr> ';
+                    $("#userlist").append(str);
+                }
+            }
+        });
+
+    });
+ function deleteTr(obj,id){
+        //询问框
+        layer.confirm('确定删除此方向？', {
+            btn: ['确定','取消'] //按钮
+        }, function(index){
+            $.ajax({
+                url: "http://127.0.0.1:9524/ovls-direction/deleteDirection?id="+id,
+                type:"DELETE",
+                dataType: "json",
+                success: function (result) {
+                    if(result=0){
+                        layer.msg('删除失败，请稍后重试。');
+                    }else{
+                        layer.close(index);
+                        layer.msg('删除成功');
+                        $(obj).parent().remove();
+                    }
+                }
+            });
+
+        });
+    }
+
+    //添加课程
+    $(document).on('click', '#addcourse', function() {
+        layer.open({
+            type : 2,
+            border : [1 , 1 , 'gray', true],
+            shadeClose:true,
+            title : false,
+            content:'addDirection.html',
+            area : ['500px' , '320px'],
+            offset : ['100px',''],
+            resize:false
+        });
+    });
+
+</script>
+
+</head>
+
+
+<body>
+
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="#">首页</a></li>
+    <li><a href="#">数据表</a></li>
+    <li><a href="#">方向管理</a></li>
+    </ul>
+    </div>
+
+    <div class="pagin">
+        <div class="message">&nbsp;&nbsp;&nbsp;共<i class="blue" id="blue"></i>条记录
+            <a style="float:right" id="addcourse" href="javascript:void(0)">
+                <img alt="" src="images/add.png" >添加方向&nbsp;&nbsp;&nbsp;&nbsp;
+            </a>
+        </div>
+
+    </div>
+
+
+
+    <div class="rightinfo" style="width:70%;padding-left:90px">
+    <table class="tablelist">
+    	<thead id="userlist">
+    	<tr>
+        <th style="width: 20%;">编号</th>
+        <th style="width: 30%;">方向名称</th>
+        <th style="width: 20%;">顺序</th>
+        <th style="width: 20%;">操作</th>
+        </tr>
+        </thead>
+        <tbody >
+
+        </tbody>
+    </table>
+
+ <!--   <div class="pagin">
+    	<div class="message">共<i class="blue" id="blue">1256</i>条记录，当前显示第&nbsp;<i class="blue">2&nbsp;</i>页
+        </div>
+        <ul class="paginList">
+        <li class="paginItem"><a href="javascript:;"><span class="pagepre"></span></a></li>
+        <li class="paginItem"><a href="javascript:;">1</a></li>
+        <li class="paginItem current"><a href="javascript:;">2</a></li>
+        <li class="paginItem"><a href="javascript:;">3</a></li>
+        <li class="paginItem"><a href="javascript:;">4</a></li>
+        <li class="paginItem"><a href="javascript:;">5</a></li>
+        <li class="paginItem more"><a href="javascript:;">...</a></li>
+        <li class="paginItem"><a href="javascript:;">10</a></li>
+        <li class="paginItem"><a href="javascript:;"><span class="pagenxt"></span></a></li>
+        </ul>
+    </div>-->
+
+
+    </div>
+    
+    <script type="text/javascript">
+	$('.tablelist tbody tr:odd').addClass('odd');
+	</script>
+</body>
+</html>

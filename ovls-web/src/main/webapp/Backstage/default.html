@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>无标题文档</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="js/jquery.js"></script>
+
+    <script type="text/javascript">
+        //打开即加载
+        $(function () {
+            //加载新闻
+            loadnews();
+        });
+    </script>
+    <script type="text/javascript">
+        /*新闻*/
+        function loadnews() {
+            $.ajax({
+                url: 'https://api.shenjian.io/?appid=429b62447e1563d31488b134907293d5',
+                type: "get",
+                async: false,
+                dataType: "jsonp",
+                success: function (result) {
+                    var data = result.data;
+                    for (var i = 0; i < 20; i++) {
+                        var keyword = data[i].keyword;
+                        var str = '<li><a href="https://www.baidu.com/s?wd=' + keyword + '" target="_blank">' + (i + 1) + '&nbsp;' + keyword + ' </a> </li> ';
+                        $("#news").append(str);
+                    }
+
+                }
+            });
+        }
+
+
+
+    </script>
+
+    <script type="text/javascript">
+        //上次登录时间
+        $(function () {
+            var time = localStorage.lastLoginTime;
+            var curTime = new Date(time).Format("yyyy-MM-dd hh:mm:ss");
+            $("#time").html("您上次登录的时间：" + curTime);
+        });
+
+        // 对Date的扩展，将 Date 转化为指定格式的String
+        // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+        // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+        // 例子：
+        // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+        // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+        Date.prototype.Format = function (fmt) {
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+    </script>
+</head>
+
+
+<body>
+
+<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+        <li><a href="#">首页</a></li>
+        <li><a href="#">工作台</a></li>
+    </ul>
+</div>
+
+
+<div class="mainbox">
+
+    <div class="mainleft">
+
+
+        <div class="leftinfo">
+            <div class="welinfo" style="margin-left: 50px;margin-top: 20px">
+                <span><img src="images/sun.png" alt="天气"/></span>
+                <b>Admin，欢迎使用信息管理系统</b>
+            </div>
+            <div class="welinfo" style="margin-left: 50px">
+                <span><img src="images/time.png" alt="时间"/></span>
+                <i id="time"></i>
+            </div>
+
+            <div class="xline"></div>
+
+            <!-- 历史上的今天 -->
+            <div style="height: 55%">
+                <iframe style="height:100%;width: 800px;padding-left: 80px" SRC="http://www.ipip5.com/today/api.php?type=txt" ></iframe>
+            </div>
+
+            <div class="xline"></div>
+
+
+            <div class="box"></div>
+
+            <div class="welinfo">
+                <span><img src="images/dp.png" alt="提醒"/></span>
+                <b>信息管理系统使用指南</b>
+            </div>
+
+            <ul class="infolist">
+                <li><span>您可以快速进行用户管理</span><a class="ibtn">用户管理</a></li>
+                <li><span>您可以快速进行课程管理</span><a class="ibtn">添加或删除课程</a></li>
+            </ul>
+
+        </div>
+    </div>
+    <!--leftinfo end-->
+
+
+    <div class="mainright">
+
+        <div class="dflist">
+            <div class="listtitle"><a href="#" class="more1"></a>热点新闻</div>
+            <ul class="newlist" id="news">
+                <!--新闻循环处-->
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    setWidth();
+    $(window).resize(function () {
+        setWidth();
+    });
+
+    function setWidth() {
+        var width = ($('.leftinfos').width() - 12) / 2;
+        $('.infoleft,.inforight').width(width);
+    }
+</script>
+</html>

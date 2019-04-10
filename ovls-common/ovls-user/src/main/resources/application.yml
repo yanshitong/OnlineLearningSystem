@@ -1,0 +1,20 @@
+server:
+ port: 9525
+spring:
+ datasource:
+  username: root
+  password: 123
+  url: jdbc:mysql://127.0.0.1:3306/ovls?useUnicode=true&characterEncoding=utf8
+  driverClassName: com.mysql.jdbc.Driver
+ redis:
+  host: 127.0.0.1
+  port: 6379
+ application:
+  name: ovls-user
+eureka:
+ client:
+  serviceUrl:
+   defaultZone: http://127.0.0.1:7777/eureka
+ instance:
+  perferIpAddress: true
+  instanceId: ${spring.cloud.client.ip-address}:${server.port}
